@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Morph web modifier</title>
+    <script type="module" src="popup.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            width: 320px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tab.active {
+            background: #454545;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 10px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body style="width: 447px;">
+    <div style="padding: 10px;">
+        <h3>Current URL</h3>
+        <p id="url">Loading...</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="extract">Extract</div>
+        <div class="tab" data-tab="hide">Hide</div>
+        <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <div id="hide" class="tab-content">
+        <h3>Hide Elements</h3>
+        <input type="text" id="selectorInput" placeholder="Enter class, id, or tag">
+        <button id="hideButton">Hide</button>
+
+        <h4>Selectors for this site:</h4>
+        <ul id="selectorList" style="list-style-type: none; padding: 0; margin: 0;"></ul>
+    </div>
+
+    <div id="extract" class="tab-content active">
+        <h3>Extract Info</h3>
+        <button id="extractButton">Extract Data</button>
+        <div id="extractResult"></div>
+    </div>
+
+    <div id="settings" class="tab-content">
+        <h3>Settings</h3>
+        <label>
+            <input type="checkbox" id="masterToggle" />
+            <span id="masterLabelText">Extension Disabled</span>
+        </label>
+    </div>
+
+    <!-- <script type="module" src="popup.js"></script> -->
+</body>
+
+</html>
