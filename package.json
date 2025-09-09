@@ -1,0 +1,16 @@
+{
+  "name": "morph",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx vite build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.1.22",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
+  }
+}
