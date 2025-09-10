@@ -1,0 +1,162 @@
+:root {
+    --primary-bg-color: #09090b;
+    /* #181818; */
+    --secondary-bg-color: #27272a;
+    /* #27272a; */
+    --text-color: white;
+    --accent-color: #4b5563;
+    /* rgba(94, 114, 155, 0.75); */
+    /* #333333; */
+}
+
+::selection {
+    background: var(--accent-color);
+    color: black;
+    text-shadow: none;
+}
+
+html,
+body {
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+body {
+    /* font-family: sans-serif; */
+    width: 500px;
+    /* 447px; */
+    min-height: 530px;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    background-color: var(--primary-bg-color);
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style-type: none;
+    margin: 3px;
+    padding: 5px;
+    color: var(--text-color);
+    background: var(--secondary-bg-color);
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #aaaccc;
+    background-color: var(--primary-bg-color);
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tab.active {
+    background: var(--secondary-bg-color);
+    color: var(--text-color);
+    box-shadow: 0 3px 0 0 var(--accent-color);
+}
+
+.tab-content {
+    display: none;
+    padding: 10px;
+    padding-top: 30px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.editor {
+    display: none;
+    margin-top: 4px;
+    padding: 6px;
+    background: var(--secondary-bg-color);
+    border-radius: 0px;
+}
+
+li.expanded .editor {
+    display: block;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 4px;
+    margin-bottom: 4px;
+    box-sizing: border-box;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    color-scheme: dark;
+    border-radius: 0;
+}
+
+button {
+    cursor: pointer;
+    background-color: var(--accent-color);
+    /* #5c7aa1; */
+    /* #374151; */
+    /* rgb(94, 114, 155); */
+    /* rgb(120, 130, 150); */
+    color: #e5e7eb;
+}
+
+.save-message {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+    color: green;
+}
+
+#addCookieForm {
+    background: var(--secondary-bg-color);
+}
+
+/*  */
+
+.row {
+    display: grid;
+    grid-template-columns: 70px 50% auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+fieldset {
+    border: 1px solid white;
+    /* padding: 8px; */
+    margin-top: 10px;
+    background-color: var(--secondary-bg-color);
+}
+
+.payload-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.message {
+    /* height: 20px; */
+    background: var(--primary-bg-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    /* padding-left: 8px; */
+    /* margin-top: 8px; */
+}
+
+.hidden {
+    display: none;
+}
