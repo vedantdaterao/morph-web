@@ -72,7 +72,6 @@ async function displaySelectors() {
         });
 
         li.appendChild(delButton);
-        // li.appendChild(document.createTextNode(sel));
         const text = document.createElement("pre")
         text.textContent = sel
         li.appendChild(text);
@@ -297,3 +296,97 @@ async function showCookies() {
 }
 
 showCookies();
+
+async function addCookie() {
+    const url = await getCurrentTabUrl();
+    if (!url) return;
+
+    const formContainer = document.getElementById("addCookieForm")!;
+    const addBtn = document.getElementById("addCookie")!;
+
+    let msg = document.querySelector(".save-message") as HTMLDivElement;
+    if (!msg) {
+        msg = document.createElement("div");
+        msg.className = "save-message";
+        addBtn.insertAdjacentElement("afterend", msg);
+    }
+
+    formContainer.innerHTML = "";
+
+    if (formContainer.dataset.open === "true") {
+        formContainer.dataset.open = "false";
+        formContainer.style.display = "none";
+        return;
+    }
+    formContainer.dataset.open = "true";
+    formContainer.style.display = "block";
+
+    const nameInput = document.createElement("input");
+    nameInput.placeholder = "Name";
+
+    const valueInput = document.createElement("textarea");
+    valueInput.placeholder = "Value";
+    valueInput.rows = 3;        // optional, controls height
+    valueInput.style.width = "100%";
+
+    const pathInput = document.createElement("input");
+    pathInput.placeholder = "Path";
+    pathInput.value = "/";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "Save";
+    saveBtn.style.marginRight = "6px";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "Cancel";
+
+    const wrapper = document.createElement("div");
+    wrapper.appendChild(createLabeledField("Name", nameInput));
+    wrapper.appendChild(createLabeledField("Value", valueInput));
+    wrapper.appendChild(createLabeledField("Path", pathInput));
+    wrapper.appendChild(saveBtn);
+    wrapper.appendChild(cancelBtn);
+
+    formContainer.appendChild(wrapper);
+
+    nameInput.focus();
+
+    cancelBtn.onclick = () => {
+        formContainer.innerHTML = "";
+        formContainer.dataset.open = "false";
+        formContainer.style.display = "none";
+    };
+
+    saveBtn.onclick = async () => {
+        const name = nameInput.value.trim();
+        const value = valueInput.value.trim();
+        const path = pathInput.value.trim() || "/";
+
+        if (!name) {
+            msg.style.color = "red";
+            msg.textContent = "enter cookie name";
+            setTimeout(() => (msg.textContent = ""), 2000);
+            return;
+        }
+
+        try {
+            await chrome.cookies.set(
+                { url, name, value, path },
+                () => {
+                    msg.style.color = "green";
+                    msg.textContent = "Cookie added!";
+                    setTimeout(() => (msg.textContent = ""), 2000);
+                }
+            );
+            await showCookies();
+            cancelBtn.click();
+        } catch (err) {
+            msg.style.color = "red";
+            msg.textContent = "Failed to add cookie";
+            console.error(err);
+            setTimeout(() => (msg.textContent = ""), 2000);
+        }
+    };
+}
+
+document.getElementById("addCookie")?.addEventListener("click", addCookie);
