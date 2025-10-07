@@ -10,7 +10,9 @@ export default defineConfig({
                 popup: "src/popup/popup.ts"
             },
             output: {
-                entryFileNames: "[name].js"
+                entryFileNames: "[name].js",
+                chunkFileNames: "[name].js",
+                assetFileNames: "[name].[ext]"
             }
         }
     }
