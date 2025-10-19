@@ -1,6 +1,5 @@
 # Morph Web Extension
 
-A simple Chrome extension built with Vite and TypeScript.
 A Chrome extension that lets users manage cookies, hide webpage content, and change proxy settings.  
 - **Cookie Editor:** View, add, and modify cookies for the current website.  
 - **Proxy Manager:** Change proxy settings directly from the extension. 
