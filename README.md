@@ -22,3 +22,7 @@ A Chrome extension that lets users manage cookies, hide webpage content, and cha
 -   Enable `Developer Mode`
 
 -   Click `Load unpacked` and select the `dist/` directory
+
+>[!NOTE]
+> Intended for personal use and testing.
+> Currently supports **Chromium-based browsers**, because it is built using **Manifest V3**.
