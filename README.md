@@ -2,8 +2,8 @@
 
 A Chrome extension that lets users manage cookies, hide webpage content, and change proxy settings.  
 - **Cookie Editor:** View, add, and modify cookies for the current website.  
+- **XSS Manager:** Keeps track of URLs where Blind XSS payloads were injected.
 - **Proxy Manager:** Change proxy settings directly from the extension. 
-- **Content Hider:** Hide elements on a page by specifying their tag name, class, or ID.  
 
 ## Setup
 
@@ -13,7 +13,7 @@ A Chrome extension that lets users manage cookies, hide webpage content, and cha
 ```
 2. Build the project:
 ```bash
-npm run build
+   npm run build
 ```
 3. Load the dist folder in Chrome:
 
