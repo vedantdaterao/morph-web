@@ -390,3 +390,223 @@ async function addCookie() {
 }
 
 document.getElementById("addCookie")?.addEventListener("click", addCookie);
+
+// ----------------------------------------------------------------------------
+
+type ProxyMode = "system" | "fixed_servers" | "pac_script";
+type ProxyScheme = "http" | "https" | "socks4" | "socks5" | "quic";
+
+interface ProxyProfile {
+    id: string;
+    name: string;
+    mode: ProxyMode;
+    host?: string;
+    port?: string;
+    scheme?: ProxyScheme;
+    bypass?: string;
+    pacScript?: string;
+}
+
+const $ = <T extends HTMLElement>(id: string): T => {
+    const el = document.getElementById(id);
+    if (!el) throw new Error(`Element #${id} not found`);
+    return el as T;
+};
+
+function showMessage(text: string, type: "success" | "error" = "success") {
+    const msg = $("message");
+    msg.textContent = text;
+    msg.className = `message ${type}`;
+    msg.style.display = "block";
+    setTimeout(() => (msg.style.display = "none"), 3000);
+}
+
+async function load(): Promise<void> {
+    const kv = await chrome.storage.sync.get(["profiles", "activeProfileId"]);
+    const profiles: ProxyProfile[] = kv.profiles || [];
+    const active: string | null = kv.activeProfileId || null;
+    const list = $("list");
+    const status = $("status");
+    list.innerHTML = "";
+
+    // Update active status
+    if (!active) {
+        status.textContent = "System proxy is currently active.";
+        status.className = "status system";
+    } else {
+        const p = profiles.find(p => p.id === active);
+        status.textContent = p
+            ? `Active proxy: ${p.name} (${p.mode})`
+            : "Unknown active proxy";
+        status.className = "status active";
+    }
+
+    for (const p of profiles) {
+        const div = document.createElement("div");
+        div.className = "profile" + (active === p.id ? " active" : "");
+        const display =
+            p.mode === "fixed_servers"
+                ? `${p.scheme}://${p.host}:${p.port}`
+                : p.mode === "pac_script"
+                    ? "PAC script"
+                    : "System";
+
+        div.innerHTML = `
+            <div class="profile-info">
+                <strong>${p.name}</strong>
+                <small>${display}</small>
+            </div>
+            <div class="profile-buttons">
+                <button data-id="${p.id}" class="apply small-btn ${active === p.id ? "active" : ""}">
+                    ${active === p.id ? "Active" : "Apply"}
+                </button>
+                <button data-id="${p.id}" class="del small-btn">Del</button>
+            </div>
+        `;
+        list.appendChild(div);
+    }
+
+    for (const btn of list.querySelectorAll<HTMLButtonElement>(".apply")) {
+        btn.addEventListener("click", async e => {
+            const id = (e.currentTarget as HTMLButtonElement).dataset.id!;
+            await chrome.runtime.sendMessage({ type: "applyProfile", id });
+            await load();
+            showMessage("Proxy applied successfully!");
+        });
+    }
+
+    for (const btn of list.querySelectorAll<HTMLButtonElement>(".del")) {
+        btn.addEventListener("click", async e => {
+            const id = (e.currentTarget as HTMLButtonElement).dataset.id!;
+            const kv = await chrome.storage.sync.get(["profiles"]);
+            const newProfiles: ProxyProfile[] = (kv.profiles || []).filter((p: any) => p.id !== id);
+            await chrome.storage.sync.set({ profiles: newProfiles });
+
+            const activeId = (await chrome.storage.sync.get("activeProfileId")).activeProfileId;
+            if (activeId === id) {
+                await chrome.runtime.sendMessage({ type: "applySystem" });
+            }
+
+            await load();
+            showMessage("Profile deleted", "success");
+        });
+    }
+}
+
+function updateFieldVisibility(): void {
+    const mode = ($("p-mode") as HTMLSelectElement).value as ProxyMode;
+    $("fixed-fields").style.display = mode === "fixed_servers" ? "" : "none";
+    $("pac-field").style.display = mode === "pac_script" ? "" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const toggleBtn = $("toggle-form");
+    const proxyForm = $("proxy-form");
+    const cancelBtn = $("cancel");
+    const modeSelect = $("p-mode") as HTMLSelectElement;
+
+    toggleBtn.addEventListener("click", () => {
+        proxyForm.style.display = proxyForm.style.display === "none" ? "block" : "none";
+        $("message").style.display = "none";
+    });
+
+    cancelBtn.addEventListener("click", () => {
+        proxyForm.style.display = "none";
+    });
+
+    modeSelect.addEventListener("change", updateFieldVisibility);
+    updateFieldVisibility();
+
+    const saveBtn = $("save") as HTMLButtonElement;
+    saveBtn.addEventListener("click", async () => {
+        const name = ($("p-name") as HTMLInputElement).value.trim() || "Untitled";
+        const mode = (modeSelect.value as ProxyMode) || "system";
+
+        const profile: ProxyProfile = {
+            id: Date.now().toString(36),
+            name,
+            mode,
+        };
+
+        if (mode === "fixed_servers") {
+            profile.scheme = ($("p-scheme") as HTMLSelectElement).value as ProxyScheme;
+            profile.host = ($("p-host") as HTMLInputElement).value.trim();
+            profile.port = ($("p-port") as HTMLInputElement).value.trim();
+            profile.bypass = ($("p-bypass") as HTMLInputElement).value.trim();
+
+            if (!profile.host || !profile.port) {
+                showMessage("Please enter host and port.", "error");
+                return;
+            }
+        } else if (mode === "pac_script") {
+            profile.pacScript = ($("p-pac") as HTMLTextAreaElement).value.trim();
+            if (!profile.pacScript) {
+                showMessage("Please enter PAC script.", "error");
+                return;
+            }
+        }
+
+        const kv = await chrome.storage.sync.get(["profiles"]);
+        const profiles: ProxyProfile[] = kv.profiles || [];
+        profiles.push(profile);
+        await chrome.storage.sync.set({ profiles });
+
+        await chrome.runtime.sendMessage({ type: "applyProfile", id: profile.id });
+        await load();
+
+        proxyForm.style.display = "none";
+        showMessage("Profile saved and applied!");
+    });
+
+    $("apply-system").addEventListener("click", async () => {
+        await chrome.runtime.sendMessage({ type: "applySystem" });
+        await load();
+        showMessage("System proxy restored!");
+    });
+
+    await load();
+});
+
+// ----------------------------------------------------------------------------
+
+import { renderPayloadRows, payloadBuilder, copyBuild, clearSyncStorage, writeStorageDataToDiv } from "./blind_xss_manager";
+
+document.addEventListener("DOMContentLoaded", () => renderPayloadRows(9));
+
+const mainSection = document.getElementById("main-section")!;
+const historySection = document.getElementById("history-section")!;
+const showHistoryBtn = document.getElementById("showHistory")!;
+const backButton = document.getElementById("backButton")!;
+
+showHistoryBtn.addEventListener("click", () => {
+    mainSection.classList.add("hidden");
+    historySection.classList.remove("hidden");
+    writeStorageDataToDiv("textArea");
+});
+
+// Go back to main view
+backButton.addEventListener("click", () => {
+    historySection.classList.add("hidden");
+    mainSection.classList.remove("hidden");
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const buildBtn = document.getElementById("buildBtn");
+    if (buildBtn) buildBtn.addEventListener("click", payloadBuilder);
+
+    const copyAllBtn = document.getElementById("copyAllBtn");
+    if (copyAllBtn) copyAllBtn.addEventListener("click", copyBuild);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    writeStorageDataToDiv("textArea");
+
+    const clearBtn = document.getElementById("clear") as HTMLButtonElement | null;
+    if (clearBtn) {
+        clearBtn.onclick = () => {
+            clearSyncStorage();
+            location.reload();
+        };
+    }
+});

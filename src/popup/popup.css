@@ -109,6 +109,10 @@ button {
     /* rgb(94, 114, 155); */
     /* rgb(120, 130, 150); */
     color: #e5e7eb;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 12px;
 }
 
 .save-message {
@@ -120,4 +124,192 @@ button {
 
 #addCookieForm {
     background: var(--secondary-bg-color);
+}
+
+/*  */
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    /* border: 1px solid #ccc; */
+    background: var(--secondary-bg-color);
+    transition: background 0.2s;
+}
+
+
+.profile small {
+    color: var(--text-color);
+}
+
+.profile-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.small-btn,
+.profile button {
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    /* border: none; */
+    background: var(--secondary-bg-color);
+    transition: background 0.2s;
+}
+
+
+.profile button:hover {
+    background: var(--accent-color);
+}
+
+
+.profile button.apply.active {
+    background: #aaccaa;
+    color: black;
+}
+
+
+.status {
+    margin-bottom: 10px;
+    padding: 6px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.status.active {
+    background: var(--secondary-bg-color);
+    color: var(--text-color);
+}
+
+.status.system {
+    background: var(--secondary-bg-color);
+    color: var(--text-color);
+}
+
+/*  */
+
+
+
+.row {
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid #444; */
+    padding: 6px 10px;
+    margin: 5px 0;
+}
+
+.profile.active {
+    background: var(--secondary-bg-color);
+    border-color: #2ecc71;
+}
+
+.profile-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.small-btn {
+    padding: 4px 8px;
+    /* border: none; */
+    cursor: pointer;
+}
+
+.small-btn.active {
+    background: #2ecc71;
+    /* border: none; */
+    color: white;
+}
+
+#proxy-form {
+    border: 1px solid #333;
+    padding: 10px;
+    background: var(--secondary-bg-color);
+}
+
+.form-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.message {
+    margin-top: 6px;
+    font-size: 13px;
+    padding: 4px 8px;
+    display: none;
+}
+
+.message.success {
+    background: #2ecc71;
+    color: white;
+}
+
+.message.error {
+    background: #e74c3c;
+    color: white;
+}
+
+.status {
+    margin: 6px 0;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.system-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+}
+
+/*  */
+
+.row-xss {
+    display: grid;
+    grid-template-columns: 70px 50% auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+fieldset {
+    border: 1px solid white;
+    /* padding: 8px; */
+    margin-top: 10px;
+    background-color: var(--secondary-bg-color);
+}
+
+.payload-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.message {
+    /* height: 20px; */
+    background: var(--primary-bg-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    /* padding-left: 8px; */
+    /* margin-top: 8px; */
+}
+
+.hidden {
+    display: none;
 }

@@ -11,8 +11,9 @@
 <body>
     <div>
 
-        <div class="tabs" style="position: fixed; top: 0; left: 0; width: 100%;">
+        <div class="tabs" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999;">
             <div class="tab active" data-tab="cookie-editor">Cookie Editor</div>
+            <div class="tab" data-tab="xss-manager">XSS Manager</div>
             <div class="tab" data-tab="hide">Hide</div>
             <div class="tab" data-tab="settings">Settings</div>
         </div>
@@ -27,6 +28,42 @@
                 <button id="addCookie" style="margin-left: 3px;">Add</button>
             </div>
         </div>
+
+        <!-- -------------------------------------------------------------------------- -->
+
+        <div id="xss-manager" class="tab-content">
+            <h3>Blind XSS Manager</h3>
+            <section id="main-section">
+                <form id="main-form">
+                    <div class="row-xss">
+                        <label for="domain">Domain</label>
+                        <input id="domain" placeholder="Eg: *.xss.ht" />
+                        <button id="saveDomainButton" type="button">Save</button>
+                        <button id="showHistory" type="button" class="btn-link">History</button>
+                    </div>
+
+                    <div class="row-xss">
+                        <label for="current-url">URL</label>
+                        <input id="current-url" />
+                        <label for="nonce">Hash:</label>
+                        <pre id="nonce">------</pre>
+                    </div>
+
+                    <fieldset>
+                        <legend>Payloads</legend>
+                        <div id="payloads" class="payloads"></div>
+                    </fieldset>
+                </form>
+            </section>
+
+            <!-- History Section -->
+            <section id="history-section" class="hidden">
+                <button id="backButton" type="button"> Back </button>
+                <div id="textArea" spellcheck="false"></div>
+                <button id="clear" type="button">Clear History</button>
+            </section>
+        </div>
+
         <!-- -------------------------------------------------------------------------- -->
 
         <div id="hide" class="tab-content">
@@ -46,6 +83,77 @@
                 <input type="checkbox" id="masterToggle" style="width: fit-content;" />
                 <span id="masterLabelText">Extension Disabled</span>
             </label>
+            <hr style="color: #aaaccc;">
+
+            <h4>Proxy Setting</h4>
+            <div id="status" class="status"></div>
+            <div>
+                <div class="toolbar">
+                    <button id="toggle-form">Add Proxy</button>
+                </div>
+
+                <div id="proxy-form" style="display:none;">
+                    <div class="row">
+                        <label>Profile name</label>
+                        <input id="p-name" placeholder="My Proxy" />
+                    </div>
+
+                    <div class="row">
+                        <label>Mode</label>
+                        <select id="p-mode">
+                            <option value="fixed_servers">Fixed server</option>
+                            <option value="pac_script">PAC script</option>
+                            <option value="system">System (no proxy)</option>
+                        </select>
+                    </div>
+
+                    <div id="fixed-fields">
+                        <div class="row">
+                            <label>Scheme</label>
+                            <select id="p-scheme">
+                                <option>http</option>
+                                <option>https</option>
+                                <option>socks5</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <label>Host</label>
+                            <input id="p-host" placeholder="proxy.example.com" />
+                        </div>
+                        <div class="row">
+                            <label>Port</label>
+                            <input id="p-port" placeholder="8080" type="number" />
+                        </div>
+                        <div class="row">
+                            <label>Bypass list</label>
+                            <input id="p-bypass" placeholder="localhost,127.0.0.1" />
+                        </div>
+                    </div>
+
+                    <div id="pac-field" style="display:none;">
+                        <div class="row">
+                            <label>PAC Script</label>
+                            <textarea id="p-pac" rows="5" placeholder="function FindProxyForURL(url, host) { return 'PROXY x:8080; DIRECT'; }"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="save">Save profile</button>
+                        <button id="cancel">Cancel</button>
+                    </div>
+                    <div id="message" class="message"></div>
+                </div>
+
+                <hr>
+
+                <div class="profiles">
+                    <h4>Proxy Profiles</h4>
+                    <div id="status"></div>
+                    <div id="list"></div>
+                </div>
+
+                <button id="apply-system" class="system-btn">Set system proxy</button>
+            </div>
         </div>
 
     </div>

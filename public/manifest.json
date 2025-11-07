@@ -16,7 +16,8 @@
         "scripting",
         "activeTab",
         "storage",
-        "tabs"
+        "tabs",
+        "proxy"
     ],
     "host_permissions": [
         "http://*/*",
